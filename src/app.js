@@ -8,6 +8,14 @@ const exec = require('child_process').execSync;
 const path = require('path');
 
 const winston = require('winston');
+const md = require('markdown-it')({});
+
+const generateHTML = require('./generateHTML');
+
+md.use(require('markdown-it-emoji'));
+md.use(require('markdown-it-anchor'), {
+  slugify: s => s.replace(/^Version ([\w\.]+)$/, 'v$1')
+});
 
 const logger = winston.createLogger({
   level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
@@ -26,6 +34,9 @@ const projectPath = process.env.PROJECT_PATH;
 
 const app = new Koa();
 const router = new Router();
+
+const content = fs.readFileSync(path.join(projectPath, 'CHANGELOG.md'), 'utf8');
+const changelog = md.render(content);
 
 // logger
 app.use(async (ctx, next) => {
@@ -46,7 +57,7 @@ app.use(bodyParser()).use(xHub({ algorithm: 'sha1', secret: xhubSecret }));
 
 router.get('/', (ctx, next) => {
   try {
-    ctx.body = 'Hello World!';
+    ctx.body = generateHTML(changelog);
   } catch (e) {
     ctx.throw(500, e);
   }
