@@ -26,7 +26,7 @@ const logger = winston.createLogger({
   ],
 });
 
-const port = 1337;
+const port = process.env.PORT || 1337;
 const host = 'localhost';
 
 const xhubSecret = process.env.X_HUB_SECRET;
