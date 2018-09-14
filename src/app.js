@@ -35,8 +35,16 @@ const projectPath = process.env.PROJECT_PATH;
 const app = new Koa();
 const router = new Router();
 
-const content = fs.readFileSync(path.join(projectPath, 'CHANGELOG.md'), 'utf8');
-const changelog = md.render(content);
+let changelog;
+const fetchChangelog = () => {
+  logger.info(`Fetching changelog into cache...`)
+  const timer = Date.now();
+  const content = fs.readFileSync(path.join(projectPath, 'CHANGELOG.md'), 'utf8');
+  changelog = md.render(content);
+  logger.info(`Changelog loaded in ${Date.now() - timer}ms`);
+}
+
+fetchChangelog();
 
 // logger
 app.use(async (ctx, next) => {
@@ -82,8 +90,8 @@ router.post('/webhook', (ctx, next) => {
     case 'push':
       ctx.body = { result: 'OK' };
       logger.info('Webhook received. Pulling last changes');
-      exec(`git -C ${translationsDir} pull origin master`);
-      fetchingLocales();
+      exec(`git -C ${projectPath} pull origin master`);
+      fetchChangelog();
       break;
     default:
       ctx.throw(400, `Event '${command}' not supported`);
