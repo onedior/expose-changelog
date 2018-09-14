@@ -1,0 +1,22 @@
+{
+  "name": "expose-changelog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:onedior/expose-changelog.git",
+  "author": "Adrien Lacroix <dev@lx-consulting.fr>",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "7.0.0",
+    "@babel/plugin-transform-async-to-generator": "7.0.0",
+    "@babel/register": "7.0.0",
+    "body-parser": "^1.18.3",
+    "koa": "2.5.2",
+    "koa-bodyparser": "4.2.1",
+    "koa-router": "7.4.0",
+    "koa-x-hub": "1.0.0",
+    "winston": "^3.0.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
